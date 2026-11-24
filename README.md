@@ -31,16 +31,16 @@ The same code serves two sites from two repositories:
 | Repository | Site | Deploys from |
 |---|---|---|
 | `enterprise-r/www-prod` | `https://www.enterprise-r.com/` (production) | `main` |
-| `enterprise-r/www-ng` | `https://ng.enterprise-r.com/` (staging preview) | `ng` |
+| `enterprise-r/www-ng` | `https://ng.enterprise-r.com/` (staging preview) | `www` |
 
-Work lands on `ng` in `www-ng`. Merging the `ng` → `main` pull request in `www-ng` promotes it: `.github/workflows/promote.yml` fast-forwards `www-ng` `main` to `www-prod` `main`, which then deploys. The push never forces. If `www-prod` `main` has moved ahead, the promotion fails and the two `main` branches need reconciling by hand. On a `www-ng` checkout, `origin` is `www-ng` and `upstream` is `www-prod`.
+Work on the site is the recurring mani work line `www` in `www-ng`. `mani run branch -p www-ng BRANCH=www` opens it from `main`, or tracks `origin/www`. Every push to `www` publishes the preview. `mani run pr www-ng=<issue> APPLY=1` opens the `www` → `main` pull request, and landing it promotes: `.github/workflows/promote.yml` fast-forwards `www-ng` `main` to `www-prod` `main`, which then deploys. The push never forces. If `www-prod` `main` has moved ahead, the promotion fails and the two `main` branches need reconciling by hand. A ruleset blocks deleting `www`, so `mani run close` deletes only the local branch, and the next `branch` tracks `origin/www` again. On a `www-ng` checkout, `origin` is `www-ng` and `upstream` is `www-prod`.
 
 What differs between the sites is not committed, so a promotion cannot carry it. Each repository sets it in Settings → Secrets and variables → Actions:
 
 | Variable | Production | Preview |
 |---|---|---|
 | `SITE_URL` | `https://www.enterprise-r.com` | `https://ng.enterprise-r.com` |
-| `DEPLOY_BRANCH` | `main` | `ng` |
+| `DEPLOY_BRANCH` | `main` | `www` |
 | `SITE_NOINDEX` | unset | `true`: every page `noindex`, and `robots.txt` disallows all with no sitemap |
 | `PROMOTE_TO` | unset | `enterprise-r/www-prod` |
 
