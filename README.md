@@ -33,7 +33,7 @@ The same code serves two sites from two repositories:
 | `enterprise-r/www-prod` | `https://www.enterprise-r.com/` (production) | `main` |
 | `enterprise-r/www-ng` | `https://ng.enterprise-r.com/` (staging preview) | `ng` |
 
-Work lands on `ng` in `www-ng`. Merging the `ng` → `main` pull request in `www-ng` promotes it: `.github/workflows/promote.yml` fast-forwards `www-ng` `main` to `www-prod` `main`, which then deploys. The push never forces. If `www-prod` `main` has moved ahead, the promotion fails and the two `main` branches need reconciling by hand. On a `www-ng` checkout, `origin` is `www-ng` and `upstream` is `www-prod`.
+Work lands on `ng` in `www-ng`. `ng` is a long-lived branch that changes through one pull request per change from a work line, and it is never itself a mani work line, since `pr` would open the promotion and `close` would delete it. Merging the `ng` → `main` pull request in `www-ng` promotes it: `.github/workflows/promote.yml` fast-forwards `www-ng` `main` to `www-prod` `main`, which then deploys. The push never forces. If `www-prod` `main` has moved ahead, the promotion fails and the two `main` branches need reconciling by hand. On a `www-ng` checkout, `origin` is `www-ng` and `upstream` is `www-prod`.
 
 What differs between the sites is not committed, so a promotion cannot carry it. Each repository sets it in Settings → Secrets and variables → Actions:
 
